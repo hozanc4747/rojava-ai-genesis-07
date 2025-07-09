@@ -87,6 +87,10 @@
   .animate-glow {
     animation: glow 3s ease-in-out infinite alternate;
   }
+
+  .text-shadow {
+    text-shadow: 0 0 5px currentColor;
+  }
 }
 
 @keyframes float {

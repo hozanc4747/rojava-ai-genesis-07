@@ -5,6 +5,7 @@ import Hero from '@/components/Hero';
 import EmailCreator from '@/components/EmailCreator';
 import Features from '@/components/Features';
 import Footer from '@/components/Footer';
+import MessengerWidget from '@/components/MessengerWidget';
 
 const Index = () => {
   return (
@@ -14,6 +15,7 @@ const Index = () => {
       <EmailCreator />
       <Features />
       <Footer />
+      <MessengerWidget />
     </div>
   );
 };
