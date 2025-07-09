@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Bot, Zap, Shield, Palette, Globe, Analytics, Users, Lock } from 'lucide-react';
+import { Bot, Zap, Shield, Palette, Globe, BarChart3, Users, Lock } from 'lucide-react';
 
 const Features = () => {
   const features = [
@@ -40,7 +39,7 @@ const Features = () => {
       bgColor: 'bg-blue-400/10',
     },
     {
-      icon: Analytics,
+      icon: BarChart3,
       title: 'تحليلات ذكية',
       description: 'إحصائيات مفصلة حول أداء الإيميلات ومعدلات النجاح',
       color: 'text-orange-400',
