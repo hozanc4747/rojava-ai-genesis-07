@@ -1,0 +1,1089 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><data:blog.title/></title>
+    <b:include data='blog' name='all-head-content'/>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 🔹 الحاوي الرئيسي للروبوت */
+        .robot-blog-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1500px;
+            z-index: 1000;
+        }
+
+        /* 🔹 الروبوت الثلاثي الأبعاد */
+        .robot-3d {
+            position: relative;
+            width: 300px;
+            height: 500px;
+            transform-style: preserve-3d;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: grab;
+        }
+
+        .robot-3d:active {
+            cursor: grabbing;
+        }
+
+        /* 🔹 رأس الروبوت */
+        .robot-head {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 100px;
+            background: linear-gradient(135deg, #00bfff, #0080ff);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 191, 255, 0.3);
+        }
+
+        .robot-head:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 0 50px rgba(0, 191, 255, 0.8);
+        }
+
+        /* 🔹 شعار على الجبين */
+        .logo-forehead {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #0080ff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* 🔹 عيون الروبوت */
+        .robot-eyes {
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .eye {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #00ffff, #0080ff);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8), inset 0 0 5px rgba(255, 255, 255, 0.3);
+            animation: blink 4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 90%, 100% { height: 20px; }
+            95% { height: 2px; }
+        }
+
+        /* 🔹 جسم الروبوت */
+        .robot-body {
+            position: absolute;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 200px;
+            background: linear-gradient(135deg, #00bfff, #0066cc);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 191, 255, 0.3);
+        }
+
+        .robot-body:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 0 50px rgba(0, 191, 255, 0.8);
+        }
+
+        /* 🔹 الذراعين */
+        .robot-arm {
+            position: absolute;
+            top: 130px;
+            width: 80px;
+            height: 40px;
+            background: linear-gradient(135deg, #00bfff, #0066cc);
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 191, 255, 0.3);
+        }
+
+        .robot-arm.left { left: -90px; }
+        .robot-arm.right { right: -90px; }
+
+        .robot-arm:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(0, 191, 255, 0.8);
+        }
+
+        /* 🔹 الساعدين */
+        .robot-forearm {
+            position: absolute;
+            top: 180px;
+            width: 70px;
+            height: 35px;
+            background: linear-gradient(135deg, #0080ff, #004d99);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 128, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 128, 255, 0.3);
+        }
+
+        .robot-forearm.left { left: -80px; }
+        .robot-forearm.right { right: -80px; }
+
+        .robot-forearm:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(0, 128, 255, 0.8);
+        }
+
+        /* 🔹 الساقين */
+        .robot-leg {
+            position: absolute;
+            top: 320px;
+            width: 60px;
+            height: 120px;
+            background: linear-gradient(135deg, #00bfff, #0066cc);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 191, 255, 0.3);
+        }
+
+        .robot-leg.left { left: 90px; }
+        .robot-leg.right { right: 90px; }
+
+        .robot-leg:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 191, 255, 0.8);
+        }
+
+        /* 🔹 القدمين */
+        .robot-foot {
+            position: absolute;
+            top: 450px;
+            width: 70px;
+            height: 30px;
+            background: linear-gradient(135deg, #0080ff, #004d99);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 128, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 128, 255, 0.3);
+        }
+
+        .robot-foot.left { left: 85px; }
+        .robot-foot.right { right: 85px; }
+
+        .robot-foot:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(0, 128, 255, 0.8);
+        }
+
+        /* 🔹 العناصر السفلية */
+        .bottom-elements {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .status-box {
+            width: 80px;
+            height: 35px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 0 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-box.red {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.6);
+        }
+
+        .status-box.green {
+            background: linear-gradient(135deg, #44ff44, #00cc00);
+            color: white;
+            box-shadow: 0 0 20px rgba(68, 255, 68, 0.6);
+        }
+
+        .status-box:hover {
+            transform: scale(1.1);
+        }
+
+        .sun-icon {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #ffff00, #ffaa00);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
+            animation: rotate 12s linear infinite;
+            cursor: pointer;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .sun-icon::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg, #ffff00 8deg, transparent 9deg,
+                transparent 9deg, #ffff00 25deg, transparent 26deg,
+                transparent 26deg, #ffff00 42deg, transparent 43deg,
+                transparent 43deg, #ffff00 59deg, transparent 60deg,
+                transparent 60deg, #ffff00 76deg, transparent 77deg,
+                transparent 77deg, #ffff00 93deg, transparent 94deg,
+                transparent 94deg, #ffff00 110deg, transparent 111deg,
+                transparent 111deg, #ffff00 127deg, transparent 128deg,
+                transparent 128deg, #ffff00 144deg, transparent 145deg,
+                transparent 145deg, #ffff00 161deg, transparent 162deg,
+                transparent 162deg, #ffff00 178deg, transparent 179deg,
+                transparent 179deg, #ffff00 195deg, transparent 196deg,
+                transparent 196deg, #ffff00 212deg, transparent 213deg,
+                transparent 213deg, #ffff00 229deg, transparent 230deg,
+                transparent 230deg, #ffff00 246deg, transparent 247deg,
+                transparent 247deg, #ffff00 263deg, transparent 264deg,
+                transparent 264deg, #ffff00 280deg, transparent 281deg,
+                transparent 281deg, #ffff00 297deg, transparent 298deg,
+                transparent 298deg, #ffff00 314deg, transparent 315deg,
+                transparent 315deg, #ffff00 331deg, transparent 332deg,
+                transparent 332deg, #ffff00 348deg, transparent 349deg,
+                transparent 349deg, #ffff00 360deg, transparent 360deg
+            );
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 🔹 نافذة الأقسام */
+        .section-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 450px;
+            max-height: 600px;
+            background: linear-gradient(135deg, rgba(0, 50, 100, 0.98), rgba(0, 30, 60, 0.98));
+            border-radius: 25px;
+            box-shadow: 0 0 60px rgba(0, 191, 255, 0.8), 0 0 100px rgba(0, 191, 255, 0.4);
+            padding: 25px;
+            z-index: 2000;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            backdrop-filter: blur(30px);
+            border: 3px solid rgba(0, 191, 255, 0.4);
+        }
+
+        .section-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid rgba(0, 191, 255, 0.4);
+        }
+
+        .popup-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00bfff;
+            text-shadow: 0 0 15px rgba(0, 191, 255, 0.8);
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .close-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(255, 68, 68, 0.9);
+        }
+
+        .pages-list {
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        .pages-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .pages-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 4px;
+        }
+
+        .pages-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00bfff, #0080ff);
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+
+        .page-item {
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.15), rgba(0, 128, 255, 0.15));
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(0, 191, 255, 0.2);
+            backdrop-filter: blur(15px);
+        }
+
+        .page-item:hover {
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.3), rgba(0, 128, 255, 0.3));
+            transform: translateX(15px) scale(1.02);
+            box-shadow: 0 0 25px rgba(0, 191, 255, 0.6);
+            border-color: rgba(0, 191, 255, 0.5);
+        }
+
+        .page-title {
+            font-weight: bold;
+            color: #00bfff;
+            margin-bottom: 8px;
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+
+        .page-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        /* 🔹 تسميات الأعضاء */
+        .body-part-label {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.95), rgba(0, 128, 255, 0.95));
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            pointer-events: none;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+        }
+
+        .robot-head:hover + .body-part-label,
+        .robot-body:hover + .body-part-label,
+        .robot-arm:hover + .body-part-label,
+        .robot-forearm:hover + .body-part-label,
+        .robot-leg:hover + .body-part-label,
+        .robot-foot:hover + .body-part-label {
+            opacity: 1;
+            transform: translateY(-15px) scale(1.05);
+        }
+
+        /* 🔹 خلفية النجوم المتحركة */
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        .star.large {
+            width: 5px;
+            height: 5px;
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.8);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 🔹 تأثيرات الجسيمات */
+        .particles-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(0, 191, 255, 0.6);
+            border-radius: 50%;
+            animation: float 8s infinite linear;
+            box-shadow: 0 0 12px rgba(0, 191, 255, 0.8);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) rotate(36deg) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(-10vh) rotate(324deg) scale(1);
+            }
+            100% {
+                transform: translateY(-20vh) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* 🔹 المحتوى الأساسي للمدونة */
+        .blog-content {
+            position: relative;
+            min-height: 100vh;
+            padding: 100px 20px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 1;
+        }
+
+        .blog-posts {
+            background: linear-gradient(135deg, rgba(0, 50, 100, 0.1), rgba(0, 30, 60, 0.1));
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 191, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.3);
+        }
+
+        .post-item {
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.1), rgba(0, 128, 255, 0.1));
+            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 191, 255, 0.2);
+        }
+
+        .post-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 191, 255, 0.5);
+        }
+
+        .post-title {
+            color: #00bfff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+
+        .post-excerpt {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        /* 🔹 زر تفعيل الروبوت */
+        .robot-toggle-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #00bfff, #0080ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.6);
+            transition: all 0.3s ease;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            animation: pulse 3s infinite;
+        }
+
+        .robot-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(0, 191, 255, 0.8);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 🔹 استجابة للأجهزة المحمولة */
+        @media (max-width: 768px) {
+            .robot-3d {
+                width: 250px;
+                height: 400px;
+                transform: scale(0.8);
+            }
+
+            .section-popup {
+                width: 95%;
+                max-width: 400px;
+                max-height: 80vh;
+            }
+
+            .bottom-elements {
+                flex-direction: row;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .sun-icon {
+                width: 60px;
+                height: 60px;
+            }
+
+            .blog-content {
+                padding: 80px 15px 30px;
+            }
+
+            .robot-toggle-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        /* 🔹 إخفاء الروبوت افتراضياً */
+        .robot-blog-container.hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 🔹 خلفية النجوم -->
+    <div class="stars-bg" id="starsBg"></div>
+    
+    <!-- 🔹 الجسيمات المتحركة -->
+    <div class="particles-bg" id="particlesBg"></div>
+
+    <!-- 🔹 زر تفعيل الروبوت -->
+    <div class="robot-toggle-btn" onclick="toggleRobot()" title="عرض الروبوت التفاعلي">🤖</div>
+
+    <!-- 🔹 حاوي الروبوت الرئيسي -->
+    <div class="robot-blog-container hidden" id="robotContainer">
+        <div class="robot-3d" id="robot3d">
+            <!-- رأس الروبوت -->
+            <div class="robot-head" onclick="showSection('القائمة الرئيسية', 'head')">
+                <div class="logo-forehead">BLOG</div>
+                <div class="robot-eyes">
+                    <div class="eye"></div>
+                    <div class="eye"></div>
+                </div>
+            </div>
+            <div class="body-part-label">القائمة والفهرس</div>
+
+            <!-- جسم الروبوت -->
+            <div class="robot-body" onclick="showSection('المقالات الرئيسية', 'body')"></div>
+            <div class="body-part-label">المقالات الرئيسية</div>
+
+            <!-- الذراع الأيسر -->
+            <div class="robot-arm left" onclick="showSection('التقنية والبرمجة', 'leftArm')"></div>
+            <div class="body-part-label">التقنية والبرمجة</div>
+
+            <!-- الذراع الأيمن -->
+            <div class="robot-arm right" onclick="showSection('التصميم والإبداع', 'rightArm')"></div>
+            <div class="body-part-label">التصميم والإبداع</div>
+
+            <!-- الساعد الأيسر -->
+            <div class="robot-forearm left" onclick="showSection('دروس تعليمية', 'leftForearm')"></div>
+            <div class="body-part-label">دروس تعليمية</div>
+
+            <!-- الساعد الأيمن -->
+            <div class="robot-forearm right" onclick="showSection('مشاريع ونماذج', 'rightForearm')"></div>
+            <div class="body-part-label">مشاريع ونماذج</div>
+
+            <!-- الساق الأيسر -->
+            <div class="robot-leg left" onclick="showSection('أخبار التقنية', 'leftLeg')"></div>
+            <div class="body-part-label">أخبار التقنية</div>
+
+            <!-- الساق الأيمن -->
+            <div class="robot-leg right" onclick="showSection('مراجعات وتقييمات', 'rightLeg')"></div>
+            <div class="body-part-label">مراجعات وتقييمات</div>
+
+            <!-- القدم الأيسر -->
+            <div class="robot-foot left" onclick="showSection('موارد مفيدة', 'leftFoot')"></div>
+            <div class="body-part-label">موارد مفيدة</div>
+
+            <!-- القدم الأيمن -->
+            <div class="robot-foot right" onclick="showSection('اتصل بنا', 'rightFoot')"></div>
+            <div class="body-part-label">اتصل بنا</div>
+        </div>
+
+        <!-- العناصر السفلية -->
+        <div class="bottom-elements">
+            <div class="status-box red" onclick="showStatus('offline')">غير متصل</div>
+            <div class="sun-icon" onclick="toggleTheme()"></div>
+            <div class="status-box green" onclick="showStatus('online')">متصل</div>
+        </div>
+
+        <!-- زر إغلاق الروبوت -->
+        <div style="position: absolute; top: 20px; right: 20px;">
+            <button style="background: linear-gradient(135deg, #ff4444, #cc0000); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);" onclick="toggleRobot()">×</button>
+        </div>
+    </div>
+
+    <!-- 🔹 نافذة الأقسام -->
+    <div class="section-popup" id="sectionPopup">
+        <div class="popup-header">
+            <h3 class="popup-title" id="popupTitle">عنوان القسم</h3>
+            <button class="close-btn" onclick="closeSection()">×</button>
+        </div>
+        <div class="pages-list" id="pagesList">
+            <!-- سيتم ملؤها بـ JavaScript -->
+        </div>
+    </div>
+
+    <!-- 🔹 المحتوى الأساسي للمدونة -->
+    <div class="blog-content">
+        <div class="blog-posts">
+            <h1 style="color: #00bfff; text-align: center; margin-bottom: 30px; font-size: 32px; text-shadow: 0 0 20px rgba(0, 191, 255, 0.8);">
+                <data:blog.title/>
+            </h1>
+            
+            <!-- قسم المشاركات -->
+            <b:section id='main' class='main' maxwidgets='1'>
+                <b:widget id='Blog1' locked='true' title='مشاركات المدونة' type='Blog'>
+                    <b:widget-settings>
+                        <b:widget-setting name='showDateHeader'>true</b:widget-setting>
+                        <b:widget-setting name='style.textcolor'>#ffffff</b:widget-setting>
+                        <b:widget-setting name='showShareButtons'>true</b:widget-setting>
+                    </b:widget-settings>
+                    <b:includable id='main'>
+                        <div class='blog-posts'>
+                            <b:loop values='data:posts' var='post'>
+                                <div class='post-item'>
+                                    <div class='post-title'>
+                                        <a expr:href='data:post.url' style='color: #00bfff; text-decoration: none;'>
+                                            <data:post.title/>
+                                        </a>
+                                    </div>
+                                    <div class='post-excerpt'>
+                                        <data:post.snippet/>
+                                    </div>
+                                </div>
+                            </b:loop>
+                        </div>
+                    </b:includable>
+                </b:widget>
+            </b:section>
+        </div>
+    </div>
+
+    <script type='text/javascript'>
+        // 🔹 بيانات الأقسام والصفحات
+        const sectionsData = {
+            'head': {
+                title: 'القائمة الرئيسية والفهرس',
+                pages: [
+                    { title: 'الصفحة الرئيسية', desc: 'العودة إلى الصفحة الرئيسية للمدونة', url: '/' },
+                    { title: 'حول الموقع', desc: 'معلومات عن المدونة ومؤسسها', url: '/p/about.html' },
+                    { title: 'خريطة الموقع', desc: 'دليل شامل لجميع صفحات الموقع', url: '/sitemap.xml' },
+                    { title: 'سياسة الخصوصية', desc: 'شروط الاستخدام وحماية البيانات', url: '/p/privacy.html' },
+                    { title: 'تواصل معنا', desc: 'طرق التواصل والدعم الفني', url: '/p/contact.html' }
+                ]
+            },
+            'body': {
+                title: 'المقالات الرئيسية',
+                pages: [
+                    { title: 'أحدث المقالات', desc: 'آخر المنشورات والمحتوى الجديد', url: '/' },
+                    { title: 'الأكثر قراءة', desc: 'المقالات الأكثر شعبية ومشاهدة', url: '/search/label/شائع' },
+                    { title: 'مقالات مميزة', desc: 'مجموعة مختارة من أفضل المحتوى', url: '/search/label/مميز' },
+                    { title: 'أرشيف المقالات', desc: 'جميع المقالات مرتبة حسب التاريخ', url: '/search' }
+                ]
+            },
+            'leftArm': {
+                title: 'التقنية والبرمجة',
+                pages: [
+                    { title: 'تطوير الويب', desc: 'HTML, CSS, JavaScript وأحدث التقنيات', url: '/search/label/تطوير-الويب' },
+                    { title: 'البرمجة بـ Python', desc: 'دروس ومشاريع بلغة البايثون', url: '/search/label/Python' },
+                    { title: 'الذكاء الاصطناعي', desc: 'مقدمة في الذكاء الاصطناعي والتعلم الآلي', url: '/search/label/ذكاء-اصطناعي' },
+                    { title: 'أمن المعلومات', desc: 'حماية البيانات والأمان السيبراني', url: '/search/label/أمن-المعلومات' },
+                    { title: 'قواعد البيانات', desc: 'SQL, NoSQL وإدارة البيانات', url: '/search/label/قواعد-البيانات' }
+                ]
+            },
+            'rightArm': {
+                title: 'التصميم والإبداع',
+                pages: [
+                    { title: 'تصميم الجرافيك', desc: 'أساسيات التصميم والألوان والتكوين', url: '/search/label/تصميم-جرافيك' },
+                    { title: 'تصميم المواقع', desc: 'UI/UX وتجربة المستخدم', url: '/search/label/تصميم-مواقع' },
+                    { title: 'التصوير الفوتوغرافي', desc: 'تقنيات التصوير والإضاءة', url: '/search/label/تصوير' },
+                    { title: 'الفيديو والمونتاج', desc: 'إنتاج وتحرير الفيديوهات', url: '/search/label/مونتاج' },
+                    { title: 'الرسم الرقمي', desc: 'أدوات الرسم الرقمي والإبداع', url: '/search/label/رسم-رقمي' }
+                ]
+            },
+            'leftForearm': {
+                title: 'دروس تعليمية',
+                pages: [
+                    { title: 'دروس للمبتدئين', desc: 'أساسيات البرمجة والتقنية', url: '/search/label/مبتدئين' },
+                    { title: 'دروس متقدمة', desc: 'مواضيع متقدمة للمحترفين', url: '/search/label/متقدم' },
+                    { title: 'ورش العمل', desc: 'جلسات تدريبية تفاعلية', url: '/search/label/ورش-عمل' },
+                    { title: 'شهادات ودورات', desc: 'برامج تعليمية معتمدة', url: '/search/label/شهادات' }
+                ]
+            },
+            'rightForearm': {
+                title: 'مشاريع ونماذج',
+                pages: [
+                    { title: 'مشاريع مفتوحة المصدر', desc: 'مشاريع يمكن المساهمة فيها', url: '/search/label/مفتوح-المصدر' },
+                    { title: 'نماذج تطبيقات', desc: 'أمثلة عملية وقوالب جاهزة', url: '/search/label/نماذج' },
+                    { title: 'حلول برمجية', desc: 'حلول لمشاكل برمجية شائعة', url: '/search/label/حلول' },
+                    { title: 'مكتبة الأكواد', desc: 'مقاطع كود مفيدة وقابلة للإعادة استخدام', url: '/search/label/أكواد' }
+                ]
+            },
+            'leftLeg': {
+                title: 'أخبار التقنية',
+                pages: [
+                    { title: 'آخر الأخبار', desc: 'أحدث التطورات في عالم التقنية', url: '/search/label/أخبار' },
+                    { title: 'إطلاقات جديدة', desc: 'منتجات وخدمات تقنية جديدة', url: '/search/label/إطلاقات' },
+                    { title: 'تحديثات البرامج', desc: 'آخر تحديثات التطبيقات والأنظمة', url: '/search/label/تحديثات' },
+                    { title: 'مؤتمرات وفعاليات', desc: 'أهم المؤتمرات التقنية العالمية', url: '/search/label/مؤتمرات' }
+                ]
+            },
+            'rightLeg': {
+                title: 'مراجعات وتقييمات',
+                pages: [
+                    { title: 'مراجعة الأجهزة', desc: 'تقييم أحدث الأجهزة التقنية', url: '/search/label/مراجعة-أجهزة' },
+                    { title: 'مراجعة البرامج', desc: 'تقييم التطبيقات والبرامج', url: '/search/label/مراجعة-برامج' },
+                    { title: 'مقارنات', desc: 'مقارنات شاملة بين المنتجات', url: '/search/label/مقارنات' },
+                    { title: 'توصيات', desc: 'ترشيحات لأفضل المنتجات', url: '/search/label/توصيات' }
+                ]
+            },
+            'leftFoot': {
+                title: 'موارد مفيدة',
+                pages: [
+                    { title: 'أدوات المطورين', desc: 'أدوات مفيدة للمبرمجين والمطورين', url: '/search/label/أدوات' },
+                    { title: 'مواقع مفيدة', desc: 'مجموعة من المواقع التعليمية والمفيدة', url: '/search/label/مواقع' },
+                    { title: 'كتب ومراجع', desc: 'كتب تقنية وموارد تعليمية', url: '/search/label/كتب' },
+                    { title: 'قنوات يوتيوب', desc: 'قنوات تعليمية مفيدة', url: '/search/label/يوتيوب' }
+                ]
+            },
+            'rightFoot': {
+                title: 'اتصل بنا',
+                pages: [
+                    { title: 'نموذج الاتصال', desc: 'راسلنا مباشرة من خلال النموذج', url: '/p/contact.html' },
+                    { title: 'البريد الإلكتروني', desc: 'تواصل معنا عبر البريد الإلكتروني', url: 'mailto:info@example.com' },
+                    { title: 'وسائل التواصل', desc: 'تابعنا على منصات التواصل الاجتماعي', url: '/p/social.html' },
+                    { title: 'الدعم الفني', desc: 'احصل على مساعدة فنية', url: '/p/support.html' }
+                ]
+            }
+        };
+
+        // 🔹 متغيرات التحكم في الحركة
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let rotationX = 0;
+        let rotationY = 0;
+        let currentSection = null;
+        let isRobotVisible = false;
+
+        // 🔹 إعداد النجوم المتحركة
+        function createStars() {
+            const starsContainer = document.getElementById('starsBg');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = Math.random() > 0.8 ? 'star large' : 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 🔹 إعداد الجسيمات المتحركة
+        function createParticles() {
+            const particlesContainer = document.getElementById('particlesBg');
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 🔹 تبديل عرض الروبوت
+        function toggleRobot() {
+            const robotContainer = document.getElementById('robotContainer');
+            isRobotVisible = !isRobotVisible;
+            
+            if (isRobotVisible) {
+                robotContainer.classList.remove('hidden');
+                setupRobotControls();
+            } else {
+                robotContainer.classList.add('hidden');
+                closeSection();
+            }
+        }
+
+        // 🔹 التحكم في حركة الروبوت
+        function setupRobotControls() {
+            const robot = document.getElementById('robot3d');
+
+            // أحداث الماوس
+            robot.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+
+                rotationY += deltaX * 0.5;
+                rotationX -= deltaY * 0.5;
+
+                // تحديد زوايا الدوران
+                rotationX = Math.max(-40, Math.min(40, rotationX));
+
+                robot.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            // أحداث اللمس للأجهزة المحمولة
+            robot.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                const touch = e.touches[0];
+                previousMousePosition = { x: touch.clientX, y: touch.clientY };
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - previousMousePosition.x;
+                const deltaY = touch.clientY - previousMousePosition.y;
+
+                rotationY += deltaX * 0.5;
+                rotationX -= deltaY * 0.5;
+
+                rotationX = Math.max(-40, Math.min(40, rotationX));
+
+                robot.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+
+                previousMousePosition = { x: touch.clientX, y: touch.clientY };
+            });
+
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        // 🔹 عرض قسم معين
+        function showSection(title, sectionKey) {
+            if (isDragging) return; // تجنب فتح القسم أثناء السحب
+
+            currentSection = sectionKey;
+            const popup = document.getElementById('sectionPopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const pagesList = document.getElementById('pagesList');
+
+            popupTitle.textContent = sectionsData[sectionKey].title;
+            
+            // ملء قائمة الصفحات
+            pagesList.innerHTML = '';
+            sectionsData[sectionKey].pages.forEach(page => {
+                const pageItem = document.createElement('div');
+                pageItem.className = 'page-item';
+                pageItem.innerHTML = `
+                    <div class="page-title">${page.title}</div>
+                    <div class="page-desc">${page.desc}</div>
+                `;
+                pageItem.onclick = () => {
+                    window.open(page.url, '_self');
+                };
+                pagesList.appendChild(pageItem);
+            });
+
+            // إظهار النافذة مع تأثير التكبير
+            popup.classList.add('show');
+
+            // تأثير التقريب على الروبوت
+            const robot = document.getElementById('robot3d');
+            robot.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(1.1)`;
+        }
+
+        // 🔹 إغلاق نافذة القسم
+        function closeSection() {
+            const popup = document.getElementById('sectionPopup');
+            popup.classList.remove('show');
+            
+            // إعادة الروبوت لحالته الطبيعية
+            const robot = document.getElementById('robot3d');
+            robot.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(1)`;
+            
+            currentSection = null;
+        }
+
+        // 🔹 عرض حالة الاتصال
+        function showStatus(status) {
+            const message = status === 'online' ? 'الموقع متصل بالإنترنت! ✅' : 'الموقع غير متصل حالياً ❌';
+            alert(message);
+        }
+
+        // 🔹 تغيير النمط
+        function toggleTheme() {
+            const sun = document.querySelector('.sun-icon');
+            sun.style.animationDuration = '1s';
+            setTimeout(() => {
+                sun.style.animationDuration = '12s';
+            }, 3000);
+            
+            alert('🎨 سيتم إضافة ميزة تغيير النمط قريباً!');
+        }
+
+        // 🔹 إغلاق النافذة عند الضغط خارجها
+        document.addEventListener('click', (e) => {
+            const popup = document.getElementById('sectionPopup');
+            if (e.target === popup) {
+                closeSection();
+            }
+        });
+
+        // 🔹 التحكم بلوحة المفاتيح
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (currentSection) {
+                    closeSection();
+                } else if (isRobotVisible) {
+                    toggleRobot();
+                }
+            }
+        });
+
+        // 🔹 تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            createParticles();
+            
+            // إضافة ترحيب تفاعلي
+            setTimeout(() => {
+                console.log('🤖 مرحباً! تم تحميل قالب مدونة الروبوت التفاعلي بنجاح!');
+            }, 1000);
+        });
+
+        // 🔹 تحسين الأداء - إيقاف الرسوم المتحركة عند عدم النشاط
+        let inactivityTimer;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                document.querySelectorAll('.particle, .star').forEach(el => {
+                    el.style.animationPlayState = 'paused';
+                });
+            }, 60000); // إيقاف بعد دقيقة من عدم النشاط
+        }
+
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('touchstart', resetInactivityTimer);
+        resetInactivityTimer();
+    </script>
+</body>
+</html>
