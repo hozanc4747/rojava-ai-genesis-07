@@ -1,0 +1,936 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدونة الروبوت التفاعلي - Rojava Blog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 🔹 حاوي الروبوت الرئيسي */
+        #robotContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        /* 🔹 الروبوت الثلاثي الأبعاد */
+        #robot {
+            position: relative;
+            width: 300px;
+            height: 500px;
+            transform-style: preserve-3d;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: grab;
+        }
+
+        #robot:active {
+            cursor: grabbing;
+        }
+
+        /* 🔹 رأس الروبوت */
+        .robot-head {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 100px;
+            background: linear-gradient(135deg, #00bfff, #0080ff);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 191, 255, 0.3);
+        }
+
+        .robot-head:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 0 50px rgba(0, 191, 255, 0.8);
+        }
+
+        /* 🔹 شعار على الجبين */
+        .logo-forehead {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #0080ff;
+        }
+
+        /* 🔹 عيون الروبوت */
+        .robot-eyes {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .eye {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #00ffff, #0080ff);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+            animation: blink 3s infinite;
+        }
+
+        @keyframes blink {
+            0%, 90%, 100% { height: 20px; }
+            95% { height: 2px; }
+        }
+
+        /* 🔹 جسم الروبوت */
+        .robot-body {
+            position: absolute;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 200px;
+            background: linear-gradient(135deg, #00bfff, #0066cc);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 191, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 191, 255, 0.3);
+        }
+
+        .robot-body:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 0 50px rgba(0, 191, 255, 0.8);
+        }
+
+        /* 🔹 الذراعين */
+        .robot-arm {
+            position: absolute;
+            top: 130px;
+            width: 80px;
+            height: 40px;
+            background: linear-gradient(135deg, #00bfff, #0066cc);
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 191, 255, 0.3);
+        }
+
+        .robot-arm.left {
+            left: -90px;
+        }
+
+        .robot-arm.right {
+            right: -90px;
+        }
+
+        .robot-arm:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(0, 191, 255, 0.8);
+        }
+
+        /* 🔹 الساعدين */
+        .robot-forearm {
+            position: absolute;
+            top: 180px;
+            width: 70px;
+            height: 35px;
+            background: linear-gradient(135deg, #0080ff, #004d99);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 128, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 128, 255, 0.3);
+        }
+
+        .robot-forearm.left {
+            left: -80px;
+        }
+
+        .robot-forearm.right {
+            right: -80px;
+        }
+
+        .robot-forearm:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(0, 128, 255, 0.8);
+        }
+
+        /* 🔹 الساقين */
+        .robot-leg {
+            position: absolute;
+            top: 320px;
+            width: 60px;
+            height: 120px;
+            background: linear-gradient(135deg, #00bfff, #0066cc);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 191, 255, 0.3);
+        }
+
+        .robot-leg.left {
+            left: 90px;
+        }
+
+        .robot-leg.right {
+            right: 90px;
+        }
+
+        .robot-leg:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 191, 255, 0.8);
+        }
+
+        /* 🔹 القدمين */
+        .robot-foot {
+            position: absolute;
+            top: 450px;
+            width: 70px;
+            height: 30px;
+            background: linear-gradient(135deg, #0080ff, #004d99);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 128, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 128, 255, 0.3);
+        }
+
+        .robot-foot.left {
+            left: 85px;
+        }
+
+        .robot-foot.right {
+            right: 85px;
+        }
+
+        .robot-foot:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(0, 128, 255, 0.8);
+        }
+
+        /* 🔹 العناصر السفلية */
+        .bottom-elements {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .status-box {
+            width: 60px;
+            height: 30px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 0 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .status-box.red {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
+        }
+
+        .status-box.green {
+            background: linear-gradient(135deg, #44ff44, #00cc00);
+            color: white;
+            box-shadow: 0 0 15px rgba(68, 255, 68, 0.6);
+        }
+
+        .sun-icon {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #ffff00, #ffaa00);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.6);
+            animation: rotate 10s linear infinite;
+            cursor: pointer;
+        }
+
+        .sun-icon::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg, #ffff00 17deg, transparent 18deg,
+                transparent 18deg, #ffff00 35deg, transparent 36deg,
+                transparent 36deg, #ffff00 53deg, transparent 54deg,
+                transparent 54deg, #ffff00 71deg, transparent 72deg,
+                transparent 72deg, #ffff00 89deg, transparent 90deg,
+                transparent 90deg, #ffff00 107deg, transparent 108deg,
+                transparent 108deg, #ffff00 125deg, transparent 126deg,
+                transparent 126deg, #ffff00 143deg, transparent 144deg,
+                transparent 144deg, #ffff00 161deg, transparent 162deg,
+                transparent 162deg, #ffff00 179deg, transparent 180deg,
+                transparent 180deg, #ffff00 197deg, transparent 198deg,
+                transparent 198deg, #ffff00 215deg, transparent 216deg,
+                transparent 216deg, #ffff00 233deg, transparent 234deg,
+                transparent 234deg, #ffff00 251deg, transparent 252deg,
+                transparent 252deg, #ffff00 269deg, transparent 270deg,
+                transparent 270deg, #ffff00 287deg, transparent 288deg,
+                transparent 288deg, #ffff00 305deg, transparent 306deg,
+                transparent 306deg, #ffff00 323deg, transparent 324deg,
+                transparent 324deg, #ffff00 341deg, transparent 342deg,
+                transparent 342deg, #ffff00 359deg, transparent 360deg
+            );
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 🔹 نافذة الأقسام */
+        .section-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 400px;
+            max-height: 500px;
+            background: linear-gradient(135deg, rgba(0, 50, 100, 0.95), rgba(0, 30, 60, 0.95));
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 191, 255, 0.8);
+            padding: 20px;
+            z-index: 1000;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 191, 255, 0.3);
+        }
+
+        .section-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 191, 255, 0.3);
+        }
+
+        .popup-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00bfff;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        }
+
+        .close-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+        }
+
+        .pages-list {
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .pages-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .pages-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+        }
+
+        .pages-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00bfff, #0080ff);
+            border-radius: 3px;
+        }
+
+        .page-item {
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.2), rgba(0, 128, 255, 0.2));
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 191, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .page-item:hover {
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.4), rgba(0, 128, 255, 0.4));
+            transform: translateX(10px);
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+        }
+
+        .page-title {
+            font-weight: bold;
+            color: #00bfff;
+            margin-bottom: 5px;
+        }
+
+        .page-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* 🔹 تسميات الأعضاء */
+        .body-part-label {
+            position: absolute;
+            background: rgba(0, 191, 255, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .robot-head:hover + .body-part-label,
+        .robot-body:hover + .body-part-label,
+        .robot-arm:hover + .body-part-label,
+        .robot-forearm:hover + .body-part-label,
+        .robot-leg:hover + .body-part-label,
+        .robot-foot:hover + .body-part-label {
+            opacity: 1;
+            transform: translateY(-10px);
+        }
+
+        /* 🔹 خلفية النجوم المتحركة */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* 🔹 تأثيرات الجسيمات */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 191, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 🔹 استجابة للأجهزة المحمولة */
+        @media (max-width: 768px) {
+            #robot {
+                width: 250px;
+                height: 400px;
+                transform: scale(0.8);
+            }
+
+            .section-popup {
+                width: 90%;
+                max-width: 350px;
+            }
+
+            .bottom-elements {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .sun-icon {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 🔹 خلفية النجوم -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- 🔹 الجسيمات المتحركة -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 🔹 حاوي الروبوت الرئيسي -->
+    <div id="robotContainer">
+        <div id="robot">
+            <!-- رأس الروبوت -->
+            <div class="robot-head" onclick="showSection('القائمة الرئيسية', 'head')">
+                <div class="logo-forehead">LOGO</div>
+                <div class="robot-eyes">
+                    <div class="eye"></div>
+                    <div class="eye"></div>
+                </div>
+            </div>
+            <div class="body-part-label">القائمة والفهرس</div>
+
+            <!-- جسم الروبوت -->
+            <div class="robot-body" onclick="showSection('المقالات الرئيسية', 'body')"></div>
+            <div class="body-part-label">المقالات الرئيسية</div>
+
+            <!-- الذراع الأيسر -->
+            <div class="robot-arm left" onclick="showSection('التقنية والبرمجة', 'leftArm')"></div>
+            <div class="body-part-label">التقنية والبرمجة</div>
+
+            <!-- الذراع الأيمن -->
+            <div class="robot-arm right" onclick="showSection('التصميم والإبداع', 'rightArm')"></div>
+            <div class="body-part-label">التصميم والإبداع</div>
+
+            <!-- الساعد الأيسر -->
+            <div class="robot-forearm left" onclick="showSection('دروس تعليمية', 'leftForearm')"></div>
+            <div class="body-part-label">دروس تعليمية</div>
+
+            <!-- الساعد الأيمن -->
+            <div class="robot-forearm right" onclick="showSection('مشاريع ونماذج', 'rightForearm')"></div>
+            <div class="body-part-label">مشاريع ونماذج</div>
+
+            <!-- الساق الأيسر -->
+            <div class="robot-leg left" onclick="showSection('أخبار التقنية', 'leftLeg')"></div>
+            <div class="body-part-label">أخبار التقنية</div>
+
+            <!-- الساق الأيمن -->
+            <div class="robot-leg right" onclick="showSection('مراجعات وتقييمات', 'rightLeg')"></div>
+            <div class="body-part-label">مراجعات وتقييمات</div>
+
+            <!-- القدم الأيسر -->
+            <div class="robot-foot left" onclick="showSection('موارد مفيدة', 'leftFoot')"></div>
+            <div class="body-part-label">موارد مفيدة</div>
+
+            <!-- القدم الأيمن -->
+            <div class="robot-foot right" onclick="showSection('اتصل بنا', 'rightFoot')"></div>
+            <div class="body-part-label">اتصل بنا</div>
+        </div>
+
+        <!-- العناصر السفلية -->
+        <div class="bottom-elements">
+            <div class="status-box red" onclick="showStatus('offline')">غير متصل</div>
+            <div class="sun-icon" onclick="toggleTheme()"></div>
+            <div class="status-box green" onclick="showStatus('online')">متصل</div>
+        </div>
+    </div>
+
+    <!-- 🔹 نافذة الأقسام -->
+    <div class="section-popup" id="sectionPopup">
+        <div class="popup-header">
+            <h3 class="popup-title" id="popupTitle">عنوان القسم</h3>
+            <button class="close-btn" onclick="closeSection()">×</button>
+        </div>
+        <div class="pages-list" id="pagesList">
+            <!-- سيتم ملؤها بـ JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // 🔹 بيانات الأقسام والصفحات
+        const sectionsData = {
+            'head': {
+                title: 'القائمة الرئيسية والفهرس',
+                pages: [
+                    { title: 'الصفحة الرئيسية', desc: 'العودة إلى الصفحة الرئيسية للمدونة', url: '/' },
+                    { title: 'حول الموقع', desc: 'معلومات عن المدونة ومؤسسها', url: '/about' },
+                    { title: 'خريطة الموقع', desc: 'دليل شامل لجميع صفحات الموقع', url: '/sitemap' },
+                    { title: 'سياسة الخصوصية', desc: 'شروط الاستخدام وحماية البيانات', url: '/privacy' },
+                    { title: 'تواصل معنا', desc: 'طرق التواصل والدعم الفني', url: '/contact' }
+                ]
+            },
+            'body': {
+                title: 'المقالات الرئيسية',
+                pages: [
+                    { title: 'أحدث المقالات', desc: 'آخر المنشورات والمحتوى الجديد', url: '/latest' },
+                    { title: 'الأكثر قراءة', desc: 'المقالات الأكثر شعبية ومشاهدة', url: '/popular' },
+                    { title: 'مقالات مميزة', desc: 'مجموعة مختارة من أفضل المحتوى', url: '/featured' },
+                    { title: 'أرشيف المقالات', desc: 'جميع المقالات مرتبة حسب التاريخ', url: '/archive' }
+                ]
+            },
+            'leftArm': {
+                title: 'التقنية والبرمجة',
+                pages: [
+                    { title: 'تطوير الويب', desc: 'HTML, CSS, JavaScript وأحدث التقنيات', url: '/web-dev' },
+                    { title: 'البرمجة بـ Python', desc: 'دروس ومشاريع بلغة البايثون', url: '/python' },
+                    { title: 'الذكاء الاصطناعي', desc: 'مقدمة في الذكاء الاصطناعي والتعلم الآلي', url: '/ai' },
+                    { title: 'أمن المعلومات', desc: 'حماية البيانات والأمان السيبراني', url: '/security' },
+                    { title: 'قواعد البيانات', desc: 'SQL, NoSQL وإدارة البيانات', url: '/database' }
+                ]
+            },
+            'rightArm': {
+                title: 'التصميم والإبداع',
+                pages: [
+                    { title: 'تصميم الجرافيك', desc: 'أساسيات التصميم والألوان والتكوين', url: '/graphic-design' },
+                    { title: 'تصميم المواقع', desc: 'UI/UX وتجربة المستخدم', url: '/web-design' },
+                    { title: 'التصوير الفوتوغرافي', desc: 'تقنيات التصوير والإضاءة', url: '/photography' },
+                    { title: 'الفيديو والمونتاج', desc: 'إنتاج وتحرير الفيديوهات', url: '/video-editing' },
+                    { title: 'الرسم الرقمي', desc: 'أدوات الرسم الرقمي والإبداع', url: '/digital-art' }
+                ]
+            },
+            'leftForearm': {
+                title: 'دروس تعليمية',
+                pages: [
+                    { title: 'دروس للمبتدئين', desc: 'أساسيات البرمجة والتقنية', url: '/beginner-tutorials' },
+                    { title: 'دروس متقدمة', desc: 'مواضيع متقدمة للمحترفين', url: '/advanced-tutorials' },
+                    { title: 'ورش العمل', desc: 'جلسات تدريبية تفاعلية', url: '/workshops' },
+                    { title: 'شهادات ودورات', desc: 'برامج تعليمية معتمدة', url: '/courses' }
+                ]
+            },
+            'rightForearm': {
+                title: 'مشاريع ونماذج',
+                pages: [
+                    { title: 'مشاريع مفتوحة المصدر', desc: 'مشاريع يمكن المساهمة فيها', url: '/open-source' },
+                    { title: 'نماذج تطبيقات', desc: 'أمثلة عملية وقوالب جاهزة', url: '/app-templates' },
+                    { title: 'حلول برمجية', desc: 'حلول لمشاكل برمجية شائعة', url: '/solutions' },
+                    { title: 'مكتبة الأكواد', desc: 'مقاطع كود مفيدة وقابلة للإعادة استخدام', url: '/code-library' }
+                ]
+            },
+            'leftLeg': {
+                title: 'أخبار التقنية',
+                pages: [
+                    { title: 'آخر الأخبار', desc: 'أحدث التطورات في عالم التقنية', url: '/tech-news' },
+                    { title: 'إطلاقات جديدة', desc: 'منتجات وخدمات تقنية جديدة', url: '/releases' },
+                    { title: 'تحديثات البرامج', desc: 'آخر تحديثات التطبيقات والأنظمة', url: '/updates' },
+                    { title: 'مؤتمرات وفعاليات', desc: 'أهم المؤتمرات التقنية العالمية', url: '/events' }
+                ]
+            },
+            'rightLeg': {
+                title: 'مراجعات وتقييمات',
+                pages: [
+                    { title: 'مراجعة الأجهزة', desc: 'تقييم أحدث الأجهزة التقنية', url: '/hardware-reviews' },
+                    { title: 'مراجعة البرامج', desc: 'تقييم التطبيقات والبرامج', url: '/software-reviews' },
+                    { title: 'مقارنات', desc: 'مقارنات شاملة بين المنتجات', url: '/comparisons' },
+                    { title: 'توصيات', desc: 'ترشيحات لأفضل المنتجات', url: '/recommendations' }
+                ]
+            },
+            'leftFoot': {
+                title: 'موارد مفيدة',
+                pages: [
+                    { title: 'أدوات المطورين', desc: 'أدوات مفيدة للمبرمجين والمطورين', url: '/dev-tools' },
+                    { title: 'مواقع مفيدة', desc: 'مجموعة من المواقع التعليمية والمفيدة', url: '/useful-sites' },
+                    { title: 'كتب ومراجع', desc: 'كتب تقنية وموارد تعليمية', url: '/books' },
+                    { title: 'قنوات يوتيوب', desc: 'قنوات تعليمية مفيدة', url: '/youtube-channels' }
+                ]
+            },
+            'rightFoot': {
+                title: 'اتصل بنا',
+                pages: [
+                    { title: 'نموذج الاتصال', desc: 'راسلنا مباشرة من خلال النموذج', url: '/contact-form' },
+                    { title: 'البريد الإلكتروني', desc: 'تواصل معنا عبر البريد الإلكتروني', url: 'mailto:info@example.com' },
+                    { title: 'وسائل التواصل', desc: 'تابعنا على منصات التواصل الاجتماعي', url: '/social-media' },
+                    { title: 'الدعم الفني', desc: 'احصل على مساعدة فنية', url: '/support' }
+                ]
+            }
+        };
+
+        // 🔹 متغيرات التحكم في الحركة
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let rotationX = 0;
+        let rotationY = 0;
+        let currentSection = null;
+
+        // 🔹 إعداد النجوم المتحركة
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 🔹 إعداد الجسيمات المتحركة
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 🔹 التحكم في حركة الروبوت
+        function setupRobotControls() {
+            const robot = document.getElementById('robot');
+
+            // أحداث الماوس
+            robot.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+
+                rotationY += deltaX * 0.5;
+                rotationX -= deltaY * 0.5;
+
+                // تحديد زوايا الدوران
+                rotationX = Math.max(-30, Math.min(30, rotationX));
+
+                robot.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            // أحداث اللمس للأجهزة المحمولة
+            robot.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                const touch = e.touches[0];
+                previousMousePosition = { x: touch.clientX, y: touch.clientY };
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - previousMousePosition.x;
+                const deltaY = touch.clientY - previousMousePosition.y;
+
+                rotationY += deltaX * 0.5;
+                rotationX -= deltaY * 0.5;
+
+                rotationX = Math.max(-30, Math.min(30, rotationX));
+
+                robot.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+
+                previousMousePosition = { x: touch.clientX, y: touch.clientY };
+            });
+
+            document.addEventListener('touchend', () => {
+                isDragging = false;
+            });
+        }
+
+        // 🔹 عرض قسم معين
+        function showSection(title, sectionKey) {
+            if (isDragging) return; // تجنب فتح القسم أثناء السحب
+
+            currentSection = sectionKey;
+            const popup = document.getElementById('sectionPopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const pagesList = document.getElementById('pagesList');
+
+            popupTitle.textContent = sectionsData[sectionKey].title;
+            
+            // ملء قائمة الصفحات
+            pagesList.innerHTML = '';
+            sectionsData[sectionKey].pages.forEach(page => {
+                const pageItem = document.createElement('div');
+                pageItem.className = 'page-item';
+                pageItem.innerHTML = `
+                    <div class="page-title">${page.title}</div>
+                    <div class="page-desc">${page.desc}</div>
+                `;
+                pageItem.onclick = () => {
+                    // هنا يمكن إضافة كود للانتقال إلى الصفحة
+                    window.open(page.url, '_blank');
+                };
+                pagesList.appendChild(pageItem);
+            });
+
+            // إظهار النافذة مع تأثير التكبير
+            popup.classList.add('show');
+
+            // تأثير التقريب على الروبوت
+            const robot = document.getElementById('robot');
+            robot.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(1.2)`;
+        }
+
+        // 🔹 إغلاق نافذة القسم
+        function closeSection() {
+            const popup = document.getElementById('sectionPopup');
+            popup.classList.remove('show');
+            
+            // إعادة الروبوت لحالته الطبيعية
+            const robot = document.getElementById('robot');
+            robot.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(1)`;
+            
+            currentSection = null;
+        }
+
+        // 🔹 عرض حالة الاتصال
+        function showStatus(status) {
+            alert(status === 'online' ? 'الموقع متصل بالإنترنت!' : 'الموقع غير متصل حالياً');
+        }
+
+        // 🔹 تغيير النمط (يمكن تطويره لاحقاً)
+        function toggleTheme() {
+            // إضافة تأثير دوران إضافي للشمس
+            const sun = document.querySelector('.sun-icon');
+            sun.style.animationDuration = '2s';
+            setTimeout(() => {
+                sun.style.animationDuration = '10s';
+            }, 2000);
+            
+            alert('سيتم إضافة ميزة تغيير النمط قريباً!');
+        }
+
+        // 🔹 إغلاق النافذة عند الضغط خارجها
+        document.addEventListener('click', (e) => {
+            const popup = document.getElementById('sectionPopup');
+            if (e.target === popup) {
+                closeSection();
+            }
+        });
+
+        // 🔹 التحكم بلوحة المفاتيح
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && currentSection) {
+                closeSection();
+            }
+        });
+
+        // 🔹 تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            createParticles();
+            setupRobotControls();
+            
+            // إضافة ترحيب تفاعلي
+            setTimeout(() => {
+                const robot = document.getElementById('robot');
+                robot.style.animation = 'bounce 2s ease-in-out';
+            }, 1000);
+        });
+
+        // 🔹 تأثير الارتداد
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% {
+                    transform: translateY(0) rotateX(${rotationX}deg) rotateY(${rotationY}deg);
+                }
+                40% {
+                    transform: translateY(-30px) rotateX(${rotationX}deg) rotateY(${rotationY}deg);
+                }
+                60% {
+                    transform: translateY(-15px) rotateX(${rotationX}deg) rotateY(${rotationY}deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 🔹 تحسين الأداء - إيقاف الرسوم المتحركة عند عدم النشاط
+        let inactivityTimer;
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                document.querySelectorAll('.particle, .star').forEach(el => {
+                    el.style.animationPlayState = 'paused';
+                });
+            }, 30000); // إيقاف بعد 30 ثانية من عدم النشاط
+        }
+
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('touchstart', resetInactivityTimer);
+        resetInactivityTimer();
+
+    </script>
+</body>
+</html>
