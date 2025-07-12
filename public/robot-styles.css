@@ -1,0 +1,512 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
+    color: white;
+    font-family: 'Arial', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* 🔹 حاوي الروبوت الرئيسي */
+#robotContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+}
+
+/* 🔹 الروبوت الثلاثي الأبعاد */
+#robot {
+    position: relative;
+    width: 300px;
+    height: 500px;
+    transform-style: preserve-3d;
+    transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: grab;
+}
+
+#robot:active {
+    cursor: grabbing;
+}
+
+/* 🔹 رأس الروبوت */
+.robot-head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 100px;
+    background: linear-gradient(135deg, #00bfff, #0080ff);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 191, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(0, 191, 255, 0.3);
+}
+
+.robot-head:hover {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 0 50px rgba(0, 191, 255, 0.8);
+}
+
+/* 🔹 شعار على الجبين */
+.logo-forehead {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #0080ff;
+}
+
+/* 🔹 عيون الروبوت */
+.robot-eyes {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+}
+
+.eye {
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #00ffff, #0080ff);
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+    animation: blink 3s infinite;
+}
+
+@keyframes blink {
+    0%, 90%, 100% { height: 20px; }
+    95% { height: 2px; }
+}
+
+/* 🔹 جسم الروبوت */
+.robot-body {
+    position: absolute;
+    top: 110px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 200px;
+    background: linear-gradient(135deg, #00bfff, #0066cc);
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0, 191, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(0, 191, 255, 0.3);
+}
+
+.robot-body:hover {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 0 50px rgba(0, 191, 255, 0.8);
+}
+
+/* 🔹 الذراعين */
+.robot-arm {
+    position: absolute;
+    top: 130px;
+    width: 80px;
+    height: 40px;
+    background: linear-gradient(135deg, #00bfff, #0066cc);
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(0, 191, 255, 0.3);
+}
+
+.robot-arm.left { left: -90px; }
+.robot-arm.right { right: -90px; }
+
+.robot-arm:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 40px rgba(0, 191, 255, 0.8);
+}
+
+/* 🔹 الساعدين */
+.robot-forearm {
+    position: absolute;
+    top: 180px;
+    width: 70px;
+    height: 35px;
+    background: linear-gradient(135deg, #0080ff, #004d99);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 128, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(0, 128, 255, 0.3);
+}
+
+.robot-forearm.left { left: -80px; }
+.robot-forearm.right { right: -80px; }
+
+.robot-forearm:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 40px rgba(0, 128, 255, 0.8);
+}
+
+/* 🔹 الساقين */
+.robot-leg {
+    position: absolute;
+    top: 320px;
+    width: 60px;
+    height: 120px;
+    background: linear-gradient(135deg, #00bfff, #0066cc);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(0, 191, 255, 0.3);
+}
+
+.robot-leg.left { left: 90px; }
+.robot-leg.right { right: 90px; }
+
+.robot-leg:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(0, 191, 255, 0.8);
+}
+
+/* 🔹 القدمين */
+.robot-foot {
+    position: absolute;
+    top: 450px;
+    width: 70px;
+    height: 30px;
+    background: linear-gradient(135deg, #0080ff, #004d99);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 128, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(0, 128, 255, 0.3);
+}
+
+.robot-foot.left { left: 85px; }
+.robot-foot.right { right: 85px; }
+
+.robot-foot:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 40px rgba(0, 128, 255, 0.8);
+}
+
+/* 🔹 العناصر السفلية */
+.bottom-elements {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.status-box {
+    width: 60px;
+    height: 30px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    box-shadow: 0 0 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.status-box.red {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.6);
+}
+
+.status-box.green {
+    background: linear-gradient(135deg, #44ff44, #00cc00);
+    color: white;
+    box-shadow: 0 0 15px rgba(68, 255, 68, 0.6);
+}
+
+.sun-icon {
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, #ffff00, #ffaa00);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 30px rgba(255, 255, 0, 0.6);
+    animation: rotate 10s linear infinite;
+    cursor: pointer;
+}
+
+.sun-icon::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg, #ffff00 17deg, transparent 18deg,
+        transparent 18deg, #ffff00 35deg, transparent 36deg,
+        transparent 36deg, #ffff00 53deg, transparent 54deg,
+        transparent 54deg, #ffff00 71deg, transparent 72deg,
+        transparent 72deg, #ffff00 89deg, transparent 90deg,
+        transparent 90deg, #ffff00 107deg, transparent 108deg,
+        transparent 108deg, #ffff00 125deg, transparent 126deg,
+        transparent 126deg, #ffff00 143deg, transparent 144deg,
+        transparent 144deg, #ffff00 161deg, transparent 162deg,
+        transparent 162deg, #ffff00 179deg, transparent 180deg,
+        transparent 180deg, #ffff00 197deg, transparent 198deg,
+        transparent 198deg, #ffff00 215deg, transparent 216deg,
+        transparent 216deg, #ffff00 233deg, transparent 234deg,
+        transparent 234deg, #ffff00 251deg, transparent 252deg,
+        transparent 252deg, #ffff00 269deg, transparent 270deg,
+        transparent 270deg, #ffff00 287deg, transparent 288deg,
+        transparent 288deg, #ffff00 305deg, transparent 306deg,
+        transparent 306deg, #ffff00 323deg, transparent 324deg,
+        transparent 324deg, #ffff00 341deg, transparent 342deg,
+        transparent 342deg, #ffff00 359deg, transparent 360deg
+    );
+    border-radius: 50%;
+    z-index: -1;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 🔹 نافذة الأقسام */
+.section-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 400px;
+    max-height: 500px;
+    background: linear-gradient(135deg, rgba(0, 50, 100, 0.95), rgba(0, 30, 60, 0.95));
+    border-radius: 20px;
+    box-shadow: 0 0 50px rgba(0, 191, 255, 0.8);
+    padding: 20px;
+    z-index: 1000;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(0, 191, 255, 0.3);
+}
+
+.section-popup.show {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(0, 191, 255, 0.3);
+}
+
+.popup-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00bfff;
+    text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+}
+
+.close-btn {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+}
+
+.close-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+}
+
+.pages-list {
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.pages-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.pages-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+.pages-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #00bfff, #0080ff);
+    border-radius: 3px;
+}
+
+.page-item {
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.2), rgba(0, 128, 255, 0.2));
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 191, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.page-item:hover {
+    background: linear-gradient(135deg, rgba(0, 191, 255, 0.4), rgba(0, 128, 255, 0.4));
+    transform: translateX(10px);
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+}
+
+.page-title {
+    font-weight: bold;
+    color: #00bfff;
+    margin-bottom: 5px;
+}
+
+.page-desc {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* 🔹 تسميات الأعضاء */
+.body-part-label {
+    position: absolute;
+    background: rgba(0, 191, 255, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 10px;
+    font-weight: bold;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.robot-head:hover + .body-part-label,
+.robot-body:hover + .body-part-label,
+.robot-arm:hover + .body-part-label,
+.robot-forearm:hover + .body-part-label,
+.robot-leg:hover + .body-part-label,
+.robot-foot:hover + .body-part-label {
+    opacity: 1;
+    transform: translateY(-10px);
+}
+
+/* 🔹 خلفية النجوم المتحركة */
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* 🔹 تأثيرات الجسيمات */
+.particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(0, 191, 255, 0.6);
+    border-radius: 50%;
+    animation: float 6s infinite linear;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* 🔹 استجابة للأجهزة المحمولة */
+@media (max-width: 768px) {
+    #robot {
+        width: 250px;
+        height: 400px;
+        transform: scale(0.8);
+    }
+
+    .section-popup {
+        width: 90%;
+        max-width: 350px;
+    }
+
+    .bottom-elements {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .sun-icon {
+        width: 60px;
+        height: 60px;
+    }
+}

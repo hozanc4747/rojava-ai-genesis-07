@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدونة الروبوت التفاعلي - Rojava Blog</title>
+    <link rel="stylesheet" href="robot-styles.css">
+</head>
+<body>
+    <!-- 🔹 خلفية النجوم -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- 🔹 الجسيمات المتحركة -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 🔹 حاوي الروبوت الرئيسي -->
+    <div id="robotContainer">
+        <div id="robot">
+            <!-- رأس الروبوت -->
+            <div class="robot-head" onclick="showSection('القائمة الرئيسية', 'head')">
+                <div class="logo-forehead">LOGO</div>
+                <div class="robot-eyes">
+                    <div class="eye"></div>
+                    <div class="eye"></div>
+                </div>
+            </div>
+            <div class="body-part-label">القائمة والفهرس</div>
+
+            <!-- جسم الروبوت -->
+            <div class="robot-body" onclick="showSection('المقالات الرئيسية', 'body')"></div>
+            <div class="body-part-label">المقالات الرئيسية</div>
+
+            <!-- الذراع الأيسر -->
+            <div class="robot-arm left" onclick="showSection('التقنية والبرمجة', 'leftArm')"></div>
+            <div class="body-part-label">التقنية والبرمجة</div>
+
+            <!-- الذراع الأيمن -->
+            <div class="robot-arm right" onclick="showSection('التصميم والإبداع', 'rightArm')"></div>
+            <div class="body-part-label">التصميم والإبداع</div>
+
+            <!-- الساعد الأيسر -->
+            <div class="robot-forearm left" onclick="showSection('دروس تعليمية', 'leftForearm')"></div>
+            <div class="body-part-label">دروس تعليمية</div>
+
+            <!-- الساعد الأيمن -->
+            <div class="robot-forearm right" onclick="showSection('مشاريع ونماذج', 'rightForearm')"></div>
+            <div class="body-part-label">مشاريع ونماذج</div>
+
+            <!-- الساق الأيسر -->
+            <div class="robot-leg left" onclick="showSection('أخبار التقنية', 'leftLeg')"></div>
+            <div class="body-part-label">أخبار التقنية</div>
+
+            <!-- الساق الأيمن -->
+            <div class="robot-leg right" onclick="showSection('مراجعات وتقييمات', 'rightLeg')"></div>
+            <div class="body-part-label">مراجعات وتقييمات</div>
+
+            <!-- القدم الأيسر -->
+            <div class="robot-foot left" onclick="showSection('موارد مفيدة', 'leftFoot')"></div>
+            <div class="body-part-label">موارد مفيدة</div>
+
+            <!-- القدم الأيمن -->
+            <div class="robot-foot right" onclick="showSection('اتصل بنا', 'rightFoot')"></div>
+            <div class="body-part-label">اتصل بنا</div>
+        </div>
+
+        <!-- العناصر السفلية -->
+        <div class="bottom-elements">
+            <div class="status-box red" onclick="showStatus('offline')">غير متصل</div>
+            <div class="sun-icon" onclick="toggleTheme()"></div>
+            <div class="status-box green" onclick="showStatus('online')">متصل</div>
+        </div>
+    </div>
+
+    <!-- 🔹 نافذة الأقسام -->
+    <div class="section-popup" id="sectionPopup">
+        <div class="popup-header">
+            <h3 class="popup-title" id="popupTitle">عنوان القسم</h3>
+            <button class="close-btn" onclick="closeSection()">×</button>
+        </div>
+        <div class="pages-list" id="pagesList">
+            <!-- سيتم ملؤها بـ JavaScript -->
+        </div>
+    </div>
+
+    <script src="robot-script.js"></script>
+</body>
+</html>
